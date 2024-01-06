@@ -21,18 +21,23 @@ class Categories
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
-    private ?self $categories = null;
+//    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
+//    private ?self $categories = null;
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'categories')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private $parent;
 
-    #[ORM\OneToMany(mappedBy: 'categories', targetEntity: self::class)]
-    private Collection $parent;
+//    #[ORM\OneToMany(mappedBy: 'categories', targetEntity: self::class)]
+//    private Collection $parent;
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    private $categories;
 
     #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Products::class)]
     private Collection $products;
 
     public function __construct()
     {
-        $this->parent = new ArrayCollection();
+        $this->categories = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
@@ -53,14 +58,14 @@ class Categories
         return $this;
     }
 
-    public function getCategories(): ?self
+    public function getParent(): ?self
     {
-        return $this->categories;
+        return $this->parent;
     }
 
-    public function setCategories(?self $categories): static
+    public function setParent(?self $parent): static
     {
-        $this->categories = $categories;
+        $this->parent = $parent;
 
         return $this;
     }
@@ -68,27 +73,27 @@ class Categories
     /**
      * @return Collection<int, self>
      */
-    public function getParent(): Collection
+    public function getCategories(): Collection
     {
-        return $this->parent;
+        return $this->categories;
     }
 
-    public function addParent(self $parent): static
+    public function addCategories(self $categories): static
     {
-        if (!$this->parent->contains($parent)) {
-            $this->parent->add($parent);
-            $parent->setCategories($this);
+        if (!$this->categories->contains($categories)) {
+            $this->categories->add($categories);
+            $categories->setCategories($this);
         }
 
         return $this;
     }
 
-    public function removeParent(self $parent): static
+    public function removeCategories(self $categories): static
     {
-        if ($this->parent->removeElement($parent)) {
+        if ($this->categories->removeElement($categories)) {
             // set the owning side to null (unless already changed)
-            if ($parent->getCategories() === $this) {
-                $parent->setCategories(null);
+            if ($categories->getCategories() === $this) {
+                $categories->setCategories(null);
             }
         }
 

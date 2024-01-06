@@ -14,9 +14,9 @@ trait SlugTrait
         return $this->slug;
     }
 
-    public function setSlug(): ?string
+    public function setSlug(string $slug): self
     {
-        $this->slug = $this->slug;
+        $this->slug = $slug;
 
         return $this;
     }
