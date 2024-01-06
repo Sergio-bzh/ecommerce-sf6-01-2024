@@ -34,7 +34,7 @@ class Products
     private ?int $stock = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
-    private ?Cathegories $categories = null;
+    private ?Categories $categories = null;
 
     #[ORM\OneToMany(mappedBy: 'products', targetEntity: Images::class, orphanRemoval: true)]
     private Collection $images;
@@ -102,12 +102,12 @@ class Products
         return $this;
     }
 
-    public function getCategories(): ?Cathegories
+    public function getCategories(): ?Categories
     {
         return $this->categories;
     }
 
-    public function setCategories(?Cathegories $categories): static
+    public function setCategories(?Categories $categories): static
     {
         $this->categories = $categories;
 

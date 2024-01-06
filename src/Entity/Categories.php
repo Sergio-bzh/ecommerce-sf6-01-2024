@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use App\Entity\Trait\SlugTrait;
-use App\Repository\CathegoriesRepository;
+use App\Repository\CategoriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CathegoriesRepository::class)]
-class Cathegories
+#[ORM\Entity(repositoryClass: CategoriesRepository::class)]
+class Categories
 {
     use SlugTrait;
 
@@ -22,9 +22,9 @@ class Cathegories
     private ?string $name = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
-    private ?self $cathegories = null;
+    private ?self $categories = null;
 
-    #[ORM\OneToMany(mappedBy: 'cathegories', targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'categories', targetEntity: self::class)]
     private Collection $parent;
 
     #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Products::class)]
@@ -53,14 +53,14 @@ class Cathegories
         return $this;
     }
 
-    public function getCathegories(): ?self
+    public function getCategories(): ?self
     {
-        return $this->cathegories;
+        return $this->categories;
     }
 
-    public function setCathegories(?self $cathegories): static
+    public function setCategories(?self $categories): static
     {
-        $this->cathegories = $cathegories;
+        $this->categories = $categories;
 
         return $this;
     }
@@ -77,7 +77,7 @@ class Cathegories
     {
         if (!$this->parent->contains($parent)) {
             $this->parent->add($parent);
-            $parent->setCathegories($this);
+            $parent->setCategories($this);
         }
 
         return $this;
@@ -87,8 +87,8 @@ class Cathegories
     {
         if ($this->parent->removeElement($parent)) {
             // set the owning side to null (unless already changed)
-            if ($parent->getCathegories() === $this) {
-                $parent->setCathegories(null);
+            if ($parent->getCategories() === $this) {
+                $parent->setCategories(null);
             }
         }
 
