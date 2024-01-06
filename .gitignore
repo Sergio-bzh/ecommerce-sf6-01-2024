@@ -22,3 +22,6 @@
 ### Added by Sergio ###
 .idea
 .env.test
+###> symfony/asset-mapper ###
+/public/assets/
+###< symfony/asset-mapper ###
