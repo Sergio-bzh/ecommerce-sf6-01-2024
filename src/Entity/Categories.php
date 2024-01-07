@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\CathegoriesRepository;
+use App\Entity\Trait\SlugTrait;
+use App\Repository\CategoriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CathegoriesRepository::class)]
-class Cathegories
+#[ORM\Entity(repositoryClass: CategoriesRepository::class)]
+class Categories
 {
+    use SlugTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -18,18 +21,23 @@ class Cathegories
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
-    private ?self $cathegories = null;
+//    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
+//    private ?self $categories = null;
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'categories')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private $parent;
 
-    #[ORM\OneToMany(mappedBy: 'cathegories', targetEntity: self::class)]
-    private Collection $parent;
+//    #[ORM\OneToMany(mappedBy: 'categories', targetEntity: self::class)]
+//    private Collection $parent;
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    private $categories;
 
     #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Products::class)]
     private Collection $products;
 
     public function __construct()
     {
-        $this->parent = new ArrayCollection();
+        $this->categories = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
@@ -50,14 +58,14 @@ class Cathegories
         return $this;
     }
 
-    public function getCathegories(): ?self
+    public function getParent(): ?self
     {
-        return $this->cathegories;
+        return $this->parent;
     }
 
-    public function setCathegories(?self $cathegories): static
+    public function setParent(?self $parent): static
     {
-        $this->cathegories = $cathegories;
+        $this->parent = $parent;
 
         return $this;
     }
@@ -65,27 +73,27 @@ class Cathegories
     /**
      * @return Collection<int, self>
      */
-    public function getParent(): Collection
+    public function getCategories(): Collection
     {
-        return $this->parent;
+        return $this->categories;
     }
 
-    public function addParent(self $parent): static
+    public function addCategories(self $categories): static
     {
-        if (!$this->parent->contains($parent)) {
-            $this->parent->add($parent);
-            $parent->setCathegories($this);
+        if (!$this->categories->contains($categories)) {
+            $this->categories->add($categories);
+            $categories->setCategories($this);
         }
 
         return $this;
     }
 
-    public function removeParent(self $parent): static
+    public function removeCategories(self $categories): static
     {
-        if ($this->parent->removeElement($parent)) {
+        if ($this->categories->removeElement($categories)) {
             // set the owning side to null (unless already changed)
-            if ($parent->getCathegories() === $this) {
-                $parent->setCathegories(null);
+            if ($categories->getCategories() === $this) {
+                $categories->setCategories(null);
             }
         }
 
